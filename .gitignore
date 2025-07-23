@@ -1,0 +1,16 @@
+# Python
+__pycache__/
+*.pyc
+
+# Environment
+.env
+
+# Firebase credentials
+edubuilder-service-account.json
+
+# VSCode
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db 

@@ -9,6 +9,10 @@ from firebase_admin import credentials, db
 # === Setup Firebase Credential from environment ===
 cred_json = os.environ.get('GOOGLE_CREDENTIALS')
 cred_dict = json.loads(cred_json)
+
+# 🔥 Fix for escaped newlines in private key
+cred_dict["private_key"] = cred_dict["private_key"].replace("\\n", "\n")
+
 cred = credentials.Certificate(cred_dict)
 
 # === Initialize Firebase ===

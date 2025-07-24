@@ -1,15 +1,17 @@
 import os
 import secrets
+import json
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import firebase_admin
 from firebase_admin import credentials, db
 
-# === Setup Firebase Credential ===
-json_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '../edubuilder-service-account.json'))
-cred = credentials.Certificate(json_path)
+# === Setup Firebase Credential from environment ===
+cred_json = os.environ.get('GOOGLE_CREDENTIALS')
+cred_dict = json.loads(cred_json)
+cred = credentials.Certificate(cred_dict)
 
-# === Initialize Firebase with Realtime DB ===
+# === Initialize Firebase ===
 firebase_admin.initialize_app(cred, {
     'databaseURL': 'https://edubuilder-e8208-default-rtdb.firebaseio.com/'
 })
@@ -25,7 +27,6 @@ allowed_users = {
 admin_tokens = set()
 
 # === Routes ===
-
 @app.route('/')
 def serve_index():
     return send_from_directory(app.static_folder, 'index.html')
@@ -34,7 +35,6 @@ def serve_index():
 def serve_static(path):
     return send_from_directory(app.static_folder, path)
 
-# === Contact API (public) ===
 @app.route('/api/contact', methods=['POST'])
 def contact():
     data = request.get_json()
@@ -54,7 +54,6 @@ def contact():
 
     return jsonify({'status': 'success', 'message': f'Thank you for contacting us, {name}!'})
 
-# === Admin Login ===
 @app.route('/api/admin/login', methods=['POST'])
 def admin_login():
     data = request.get_json()
@@ -68,7 +67,6 @@ def admin_login():
 
     return jsonify({'message': 'Invalid credentials'}), 401
 
-# === Admin Protected: Get Submissions ===
 @app.route('/api/admin/contacts', methods=['GET'])
 def admin_get_contacts():
     auth_header = request.headers.get('Authorization')
@@ -81,11 +79,9 @@ def admin_get_contacts():
 
     ref = db.reference('contacts')
     contacts = ref.get()
-
     contacts_list = list(contacts.values()) if contacts else []
 
     return jsonify({'contacts': contacts_list})
 
-# === Run Server ===
 if __name__ == '__main__':
     app.run(debug=True)

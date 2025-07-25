@@ -64,8 +64,35 @@ cd EduBuilder
 - `POST /api/admin/login` — Admin login (returns token)
 - `GET /api/admin/contacts` — Get all contact submissions (admin, requires Bearer token)
 
+## Prerequisites
+
+- Python 3.8+
+- pip (Python package manager)
+- Modern web browser (Chrome, Firefox, Edge, etc.)
+
+## Example API Usage
+
+```bash
+# Submit contact form
+curl -X POST http://localhost:5000/api/contact -d '{"name":"John","email":"john@example.com","message":"Hello"}' -H "Content-Type: application/json"
+
+# Admin login
+curl -X POST http://localhost:5000/api/admin/login -d '{"username":"admin","password":"yourpassword"}' -H "Content-Type: application/json"
+
+# Get contacts (requires Bearer token)
+curl -X GET http://localhost:5000/api/admin/contacts -H "Authorization: Bearer <token>"
+```
+
+## Contributing
+
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+## Contact
+
+For questions or support, email: [your-email@example.com]
+
 ## Security Warning
 **Never upload your `edubuilder-service-account.json` or any credentials to GitHub.**
 
 ## License
-MIT 
+MIT
